@@ -1,0 +1,479 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}"/>
+    <title>Covid Data</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Titillium Web', sans-serif;
+            scroll-behavior: smooth;
+            list-style: none;
+            text-decoration: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 13px;
+            background:black;
+        }
+        ::-webkit-scrollbar-track {
+            background: #333;
+            border: 3px solid;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            -ms-border-radius: 10px;
+            -o-border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border: 3px solid;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            -ms-border-radius: 10px;
+            -o-border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .logo{
+            text-decoration: none;
+            color: white;
+            padding: 30px 50px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        header img{
+            vertical-align: middle;
+        }
+        header span{
+            font-size: 24px;
+            font-weight: 700;
+            color: red;
+        }
+        header ul{
+            padding: 30px 25px;
+            position: relative;
+            display: flex;
+        }
+        header ul li{
+            list-style-type: none;
+            position: relative;
+        }
+        header ul li a{
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            margin: 0px 10px;
+        }
+        header .covidinfo{
+            background: #808080;
+            border: 1px solid #808080;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 15px;
+            color: whitesmoke;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+        }
+        header .vaccinate{
+            background: green;
+            border: 1px solid green;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 15px;
+            color: whitesmoke;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+        }
+        header .stats{
+            background: red;
+            border: 1px solid red;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 15px;
+            color: whitesmoke;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+        }
+        header.sticky{
+            background: whitesmoke;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        header.sticky .logo{
+            color: #111;
+        }
+        header .covidinfo:hover{
+            background: white;
+            color: #808080;
+        }
+        header .vaccinate:hover{
+            background: white;
+            color: green;
+        }
+        header .stats:hover{
+            background: white;
+            color: red;
+        }
+
+        section{
+            padding-top: 120px;
+            padding-bottom: 120px;
+        }
+
+        .mainpage{
+            min-height: 755px;
+            background: url(/static/background.jpeg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .datadisplay{
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .worldmap{
+            min-width: 35%;
+        }
+
+        .coviddata{
+            min-width: 60%;
+        }
+        .databox{
+            background: white;
+            width: 650px;
+            height: 540px;
+            border-radius: 30px;
+            border: 1px solid #009e66;
+            overflow: hidden;
+        }
+        .databox_heading{
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 900;
+            color: royalblue;
+        }
+        .formbox form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .formbox form label{
+            display: none;
+        }
+        .formbox form Select{
+            margin-bottom: 20px;
+            padding: 15px;
+            font-size: 14px;
+            background: transparent;
+            border: none;
+            outline: none;
+            background: whitesmoke;
+            border: 1px solid #009e66;
+            color: black;
+            resize: none;
+            width: 400px;
+            border-radius: 20px;
+        }
+        .formbox form Select:focus{
+            border: 1px solid red;
+        }
+        .formbox form button{
+            color: white;
+            background: #009e66;
+            border: 1px solid #009e66;
+            width: 100px;
+            height: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 50px;
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            -ms-border-radius: 50px;
+            -o-border-radius: 50px;
+        }
+        .formbox form button:hover{
+            background: white;
+            color: #009e66;
+        }
+        .selectedcountry{
+            color: red;
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            padding-top: 30px;
+        }
+        .datarow1, .datarow2{
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        .new{
+            color: red;
+            height: 100px;
+            width: 200px;
+        }
+        .active{
+            color: orangered;
+            height: 100px;
+            width: 200px;
+        }
+        .critical{
+            color: red;
+            height: 100px;
+            width: 200px;
+        }
+        .recovered{
+            color: green;
+            height: 100px;
+            width: 200px;
+        }
+        .death{
+            color: gray;
+            height: 100px;
+            width: 200px;
+        }
+        .total{
+            color:red;
+            height: 100px;
+            width: 200px;
+        }
+
+        .about{
+            background: black;
+            min-height: auto;
+            padding-right: 120px;
+            padding-left: 120px;
+        }
+        .heading{
+            width: 100%;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .heading p{
+            color: lightslategrey;
+            font-size: 14px;
+            font-style: italic;
+        }
+        .heading h2{
+            font-size: 3em;
+            color: #009e66;
+        }
+        .content{
+            display: flex;
+            justify-content: space-around;
+        }
+        .picture{
+            padding-top: 40px;
+            display: flex;
+            width: 380px;
+            height: 380px;
+        }
+        .aboutcorona{
+            padding-left: 50px;
+            text-align: justify;
+            color: linen;
+        }
+        .aboutcorona p{
+            font-size: 17px;
+        }
+
+        .scrollup{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            background: red;
+            border: 1px solid red;
+            position: fixed;
+            bottom: 3px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -ms-border-radius: 5px;
+            -o-border-radius: 5px;
+        }
+        .fa-chevron-up{
+            color: white;
+        }
+        .scrollup.activebut{
+            bottom: 16px;
+            cursor: pointer;
+            opacity: 1;
+            transform: translateY(-10px);
+            -webkit-transform: translateY(-10px);
+            -moz-transform: translateY(-10px);
+            -ms-transform: translateY(-10px);
+            -o-transform: translateY(-10px);
+        }
+        .fa-chevron-up:hover{
+            color: red;
+        }
+        .scrollup.activebut:hover{
+            color: red;
+            background: white;
+        }
+
+
+        footer{
+            color: black;
+            text-align: center;
+            padding: 15px;
+            font-weight: bolder;
+        }
+        footer span{
+            color:red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="logo" href=""> <img src="/static/logo.png" alt="" srcset=""> <span>COVID-19 </span>Data</a>
+        <div class="toggle" onclick="toggleMenu();"></div>
+        <ul class="menu">
+            <li><a href="#home" class="stats">Get Stats <i class="fas fa-container-storage"></i></a></li>
+            <li><a href="#info" class="covidinfo">About Covid <i class="fas fa-info"></i></a></li>
+            <li><a href="https://selfregistration.cowin.gov.in/" target="_blank" class="vaccinate">Get Vaccinated <i class="fas fa-syringe"></i></a></li>
+        </ul>
+        <script>
+            window.addEventListener("scroll", function(){
+                var header = document.querySelector("header");
+                header.classList.toggle("sticky",window.scrollY > 0);
+            });
+            function toggleMenu(){
+                var menuToggle = document.querySelector(".toggle");
+                var menu = document.querySelector(".menu");
+                menuToggle.classList.toggle("active");
+                menu.classList.toggle("active");
+            }
+        </script>
+    </header>
+    <section class="mainpage" id="home">
+        <div class="datadisplay">
+            <div class="worldmap">
+                <img src="/static/map.png" alt="">
+            </div>
+            <div class="databox">
+                <div class="databox_heading">
+                    <h1>Choose Country</h1>
+                </div>
+                <div class="formbox">
+                    <form method="post" action="">
+                        {% csrf_token %} 
+                        {{form}}
+                        <button type="submit">
+                            Get Data <i class="fas fa-database"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="selectedcountry">
+                    <h1>{{countryselected}}</h1>
+                </div>
+                <div class="datarow1">
+                    <div class="new">
+                        <h1><span>{{newcases}}</span></h1>
+                        <p>New Cases</p>
+                    </div>
+                    <div class="active">
+                        <h1><span>{{activecases}}</span></h1>
+                        <p>Active Cases</p>
+                    </div>
+                    <div class="critical">
+                        <h1><span>{{criticalcases}}</span></h1>
+                        <p>Critical Cases</p>
+                    </div>
+                </div>
+                <div class="datarow2">
+                    <div class="recovered">
+                        <h1><span>{{recovered}}</span></h1>
+                        <p>Recovered</p>
+                    </div>
+                    <div class="death">
+                        <h1><span>{{death}}</span></h1>
+                        <p>Death</p>
+                    </div>
+                    <div class="total">
+                        <h1><span>{{totalcases}}</span></h1>
+                        <p>Total Cases</p>
+                    </div>                        
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="info">
+        <div class="heading">
+            <p>Get to know about Covid-19</p>
+            <h2>COVID-19</h2>
+        </div>
+        <div class="content">
+            <div class="image">
+                <img src="/static/covid.png" alt="" class="picture">
+            </div>
+            <div class="aboutcorona">
+                <p>Coronaviruses are a family of viruses that can cause respiratory illness in humans. They are called “corona” because of crown-like spikes on the surface of the virus. Severe acute respiratory syndrome (SARS), Middle East respiratory syndrome (MERS) and the common cold are examples of coronaviruses that cause illness in humans.</p>
+                <p><br>COVID-19 enters your body through your mouth, nose or eyes (directly from the airborne droplets or from transfer of the virus from your hands to your face). The virus travels to the back of your nasal passages and mucous membrane in the back of your throat. It attaches to cells there, begins to multiply and moves into lung tissue. From there, the virus can spread to other body tissues.</p>
+                <p><br>The Common Symptoms include Fever or chills, Cough, Shortness of breath or difficulty breathing, Tiredness, Muscle or body aches, Headaches, New loss of taste or smell, Sore throat, Congestion or runny nose, Nausea or vomiting, Diarrhea and additional symptoms are possible.</p>
+                <p><br>Symptoms may appear between two and 14 days after exposure to the virus. Children have similar, but usually milder, symptoms than adults. Older adults and people who have severe underlying medical conditions like heart or lung disease or diabetes are at higher risk of more serious complication from COVID-19.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="scrollup">
+        <a href="#home"><i class="fa fa-chevron-up"></i></a>
+    </div>
+    <script>
+        const scrollup = document.querySelector('.scrollup')
+        window.addEventListener('scroll', () => {
+            if(window.pageYOffset > 0){
+                scrollup.classList.add("activebut");
+            }else{
+                scrollup.classList.remove("activebut")
+            }
+        });
+    </script>
+
+    <footer class="copyright">
+        <p>Copyright <i class="far fa-copyright"></i> 2021 | All Rights Reserved<br><span>Created by Mohamed Rafiq M</span></p>
+    </footer>
+
+</body>
+</html>
